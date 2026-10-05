@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}新增學生資料{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">新增學生資料</h1>
+    <a href="{% url 'index' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> 返回列表
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label for="cname" class="form-label">姓名</label>
+                    <input type="text" id="cname" name="cname" class="form-control" placeholder="請輸入姓名">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="csex" class="form-label">性別</label>
+                    <select id="csex" name="csex" class="form-select">
+                        <option value="F">女</option>
+                        <option value="M">男</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="cbirthday" class="form-label">生日</label>
+                    <input type="date" id="cbirthday" name="cbirthday" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="cemail" class="form-label">電子郵件</label>
+                    <input type="email" id="cemail" name="cemail" class="form-control" placeholder="name@example.com">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="cphone" class="form-label">電話</label>
+                    <input type="text" id="cphone" name="cphone" class="form-control" placeholder="請輸入電話">
+                </div>
+
+                <div class="col-12">
+                    <label for="caddr" class="form-label">地址</label>
+                    <textarea id="caddr" name="caddr" class="form-control" rows="4" placeholder="請輸入地址"></textarea>
+                </div>
+
+                <div class="col-12 d-flex gap-2 pt-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> 送出
+                    </button>
+                    <a href="{% url 'index' %}" class="btn btn-outline-secondary">取消</a>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

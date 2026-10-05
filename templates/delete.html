@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load date_filters %}
+
+{% block title %}
+學生資料管理系統-刪除學生資料
+{% endblock %}
+
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">刪除學生資料</h1>
+    <a href="{% url 'index' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> 回首頁
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-4">
+
+        <div class="alert alert-warning d-flex align-items-center gap-2">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            請確認以下學生資料，刪除後無法復原。
+        </div>
+
+        <!--
+            將修改後的資料 POST 回目前這一筆學生的 edit URL
+        -->
+        {% comment %} 這裡是修改學生資料的表單，會將資料 POST 回 edit URL {% endcomment %}
+        <form action="{% url 'delete' obj_data.cid %}" method="POST">
+
+            {% csrf_token %}
+
+            <table class="table table-app">
+
+                <!-- ==================== 學號 ==================== -->
+                <tr>
+                    <th>學號</th>
+                    <td>
+                        {{ obj_data.cid }}
+                    </td>
+                </tr>
+
+
+                <!-- ==================== 姓名 ==================== -->
+                <tr>
+                    <th>姓名</th>
+
+                    <td>
+                        {{ obj_data.cname }}
+                    </td>
+                </tr>
+
+
+                <!-- ==================== 性別 ==================== -->
+                <tr>
+                    <th>性別</th>
+
+                    <td>
+                        {% if obj_data.csex == "M" %}男{% elif obj_data.csex == "F" %}女{% endif %}
+                    </td>
+                </tr>
+
+
+                <!-- ==================== 生日 ==================== -->
+                <tr>
+                    <th>生日</th>
+
+                    <td>
+                        <span title="西元 {{ obj_data.cbirthday|date:'Y-m-d' }}">{{ obj_data.cbirthday|roc_date }}</span>
+                    </td>
+                </tr>
+
+
+                <!-- ==================== Email ==================== -->
+                <tr>
+                    <th>信箱</th>
+
+                    <td>
+                        {{ obj_data.cemail }}
+                    </td>
+                </tr>
+
+
+                <!-- ==================== 電話 ==================== -->
+                <tr>
+                    <th>電話</th>
+
+                    <td>
+                        {{ obj_data.cphone }}
+                    </td>
+                </tr>
+
+
+                <!-- ==================== 地址 ==================== -->
+                <tr>
+                    <th>地址</th>
+
+                    <td>
+                        {{ obj_data.caddr }}
+                    </td>
+                </tr>
+
+            </table>
+
+            <div class="d-flex gap-2 pt-2">
+                <button type="submit" class="btn btn-danger" onclick="return deleteCheck();">
+                    <i class="bi bi-trash"></i> 刪除
+                </button>
+                <a href="{% url 'index' %}" class="btn btn-outline-secondary">取消</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<script>
+function deleteCheck() {
+    return confirm('確定要刪除這筆資料嗎？\n刪了無法復原！');
+}
+</script>
+
+{% endblock %}

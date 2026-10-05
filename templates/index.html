@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+{% load date_filters %}
+
+
+{% block title %}
+學生資料列表
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =========================================================
+     學生資料管理系統
+     ========================================================= -->
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">學生管理系統</h1>
+        <div class="text-muted">學生資料列表</div>
+    </div>
+    <a href="{% url 'post' %}" class="btn btn-primary">
+        <i class="bi bi-person-plus"></i> 新增學生資料
+    </a>
+</div>
+
+
+<!-- =========================================================
+     ★ 修改成功 Row 動畫（樣式定義於 teacher.css）
+
+     views.py 修改完成後：
+
+     /index/?updated=17
+
+     index.html 會找出 cid=17 的那一筆，
+     自動套用 updated-row class。
+
+     效果：
+     黃色 → Fade In → 閃一下 → 恢復正常
+     ========================================================= -->
+
+<!-- =========================================================
+     搜尋 + 資料筆數
+     ========================================================= -->
+
+<div class="card mb-4">
+    <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <form action="{% url 'index' %}" class="d-flex flex-grow-1" style="max-width: 420px;">
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" id="site_search" name="site_search" class="form-control" placeholder="輸入姓名 / 電話 / 地址關鍵字">
+                <button type="submit" class="btn btn-primary">搜尋</button>
+            </div>
+        </form>
+
+        <span class="badge rounded-pill text-bg-light border">
+            目前的資料筆數：{{ data_count }}
+        </span>
+    </div>
+</div>
+
+
+<!-- =========================================================
+     判斷 resultlist 是否有學生資料
+     ========================================================= -->
+
+{% if resultlist %}
+
+
+    <!-- =====================================================
+         學生資料 Table
+         ===================================================== -->
+
+    <div class="table-responsive">
+    <table class="table table-hover align-middle table-app">
+
+
+        <!-- =================================================
+             Table Header
+             ================================================= -->
+
+        <thead>
+
+            <tr>
+
+                <th>學號</th>
+
+                <th>姓名</th>
+
+                <th>性別</th>
+
+                <th>生日</th>
+
+                <th>電子郵件</th>
+
+                <th>電話</th>
+
+                <th>地址</th>
+
+                <th>編輯</th>
+
+                <th>刪除</th>
+
+            </tr>
+
+        </thead>
+
+
+
+        <!-- =================================================
+             Table Body
+             ================================================= -->
+
+        <tbody>
+
+
+            <!-- =============================================
+                 將 resultlist 中所有學生顯示出來
+                 ============================================= -->
+
+            {% for student in resultlist %}
+
+
+                <!-- =========================================
+                     ★ 修改成功 Row 判斷
+
+                     views.py 修改完成後，例如：
+
+                     /index/?updated=17
+
+                     request.GET.updated
+                     取得的是：
+
+                     "17"
+
+                     student.cid 可能是：
+
+                     17
+
+                     因此：
+
+                     student.cid|stringformat:"s"
+
+                     將 cid 轉成字串再比較。
+
+                     如果相同：
+
+                     class="updated-row"
+
+                     就會被加入目前這一筆 <tr>。
+                     ========================================= -->
+
+                <tr
+                    {% if request.GET.updated == student.cid|stringformat:"s" %}
+                        class="updated-row"
+                    {% endif %}
+                >
+
+
+                    <!-- ===============================
+                         學號
+                         =============================== -->
+
+                    <td>
+
+                        {{ student.cid }}
+
+                    </td>
+
+
+
+                    <!-- ===============================
+                         姓名
+                         =============================== -->
+
+                    <td>
+
+                        {{ student.cname }}
+
+                    </td>
+
+
+
+                    <!-- ===============================
+                         性別
+
+                         M = 男
+                         F = 女
+                         =============================== -->
+
+                    <td>
+
+                        {% if student.csex == 'M' %}
+
+                            男
+
+                        {% elif student.csex == 'F' %}
+
+                            女
+
+                        {% else %}
+
+                            {{ student.csex }}
+
+                        {% endif %}
+
+                    </td>
+
+
+
+                    <!-- ===============================
+                         生日
+                         =============================== -->
+
+                    <td>
+
+                        <span title="西元 {{ student.cbirthday|date:'Y-m-d' }}">{{ student.cbirthday|roc_date }}</span>
+
+                    </td>
+
+
+
+                    <!-- ===============================
+                         電子郵件
+                         =============================== -->
+
+                    <td>
+
+                        {{ student.cemail }}
+
+                    </td>
+
+
+
+                    <!-- ===============================
+                         電話
+                         =============================== -->
+
+                    <td>
+
+                        {{ student.cphone }}
+
+                    </td>
+
+
+
+                    <!-- ===============================
+                         地址
+                         =============================== -->
+
+                    <td>
+
+                        {{ student.caddr }}
+
+                    </td>
+
+
+
+                    <!-- ===============================
+                         ★ 編輯
+
+                         例如：
+
+                         cid = 17
+
+                         產生：
+
+                         /edit/17/
+                         =============================== -->
+
+                    <td>
+
+                        <a href="{% url 'edit' student.cid %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil-square"></i> 編輯
+                        </a>
+
+                    </td>
+
+
+
+                    <!-- ===============================
+                         ★ 刪除
+
+                         目前 urls.py 還沒有設定
+                         name='delete'
+
+                         所以這裡暫時直接使用：
+
+                         /delete/學生ID/
+
+                         注意：
+                         這個 HTML 註解裡不要放 Django url tag，
+                         否則 Django 仍然可能解析 Template Tag。
+                         =============================== -->
+
+                    <td>
+
+                        {% comment %} <a href="/delete/{{ student.cid }}/"> {% endcomment %}
+                        <a href="{% url 'delete' student.cid %}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i> 刪除
+                        </a>
+
+                    </td>
+
+
+                </tr>
+
+
+            {% endfor %}
+
+
+        </tbody>
+
+
+    </table>
+    </div>
+
+<nav aria-label="學生資料分頁" class="d-flex justify-content-center mt-4">
+    <ul class="pagination">
+
+        {% comment %} ==================== 最前頁 ==================== {% endcomment %}
+        {% if resultlist.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if request.GET.site_search %}&site_search={{ request.GET.site_search|urlencode }}{% endif %}">最前頁</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ resultlist.previous_page_number }}{% if request.GET.site_search %}&site_search={{ request.GET.site_search|urlencode }}{% endif %}">上一頁</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">最前頁</span></li>
+            <li class="page-item disabled"><span class="page-link">上一頁</span></li>
+        {% endif %}
+
+        {% comment %} ==================== 中間頁碼 ==================== {% endcomment %}
+        {% for page_num in resultlist.paginator.page_range %}
+            {% if page_num == resultlist.number %}
+                <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_num }}{% if request.GET.site_search %}&site_search={{ request.GET.site_search|urlencode }}{% endif %}">{{ page_num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% comment %} ==================== 下一頁 / 最後頁 ==================== {% endcomment %}
+        {% if resultlist.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ resultlist.next_page_number }}{% if request.GET.site_search %}&site_search={{ request.GET.site_search|urlencode }}{% endif %}">下一頁</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ resultlist.paginator.num_pages }}{% if request.GET.site_search %}&site_search={{ request.GET.site_search|urlencode }}{% endif %}">最後頁</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">下一頁</span></li>
+            <li class="page-item disabled"><span class="page-link">最後頁</span></li>
+        {% endif %}
+
+    </ul>
+</nav>
+
+
+{% else %}
+
+
+    <!-- =====================================================
+         沒有學生資料
+         ===================================================== -->
+
+    <div class="alert alert-light border text-center">
+        目前沒有學生資料。
+    </div>
+
+
+{% endif %}
+
+
+{% endblock %}

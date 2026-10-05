@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}
+學生資料管理系統-修改學生資料
+{% endblock %}
+
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">修改學生資料</h1>
+    <a href="{% url 'index' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> 回首頁
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-4">
+
+        <!--
+            將修改後的資料 POST 回目前這一筆學生的 edit URL
+        -->
+        {% comment %} 這裡是修改學生資料的表單，會將資料 POST 回 edit URL {% endcomment %}
+        <form action="{% url 'edit' obj_data.cid %}" method="POST">
+
+            {% csrf_token %}
+
+            <div class="row g-3">
+
+                <!-- ==================== 學號 ==================== -->
+                <div class="col-md-6">
+                    <label class="form-label">學號</label>
+                    <input type="text" class="form-control" value="{{ obj_data.cid }}" disabled>
+                </div>
+
+                <!-- ==================== 姓名 ==================== -->
+                <div class="col-md-6">
+                    <label for="cname" class="form-label">*姓名</label>
+                    <input
+                        type="text"
+                        id="cname"
+                        name="cname"
+                        class="form-control"
+                        value="{{ obj_data.cname }}"
+                        required
+                    >
+                </div>
+
+                <!-- ==================== 性別 ==================== -->
+                <div class="col-md-6">
+                    <label class="form-label d-block">*性別</label>
+
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="radio"
+                            id="csex_m"
+                            name="csex"
+                            value="M"
+                            {% if obj_data.csex == "M" %}checked{% endif %}
+                        >
+                        <label class="form-check-label" for="csex_m">男</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                        <input
+                            class="form-check-input"
+                            type="radio"
+                            id="csex_f"
+                            name="csex"
+                            value="F"
+                            {% if obj_data.csex == "F" %}checked{% endif %}
+                        >
+                        <label class="form-check-label" for="csex_f">女</label>
+                    </div>
+                </div>
+
+                <!-- ==================== 生日 ==================== -->
+                <div class="col-md-6">
+                    <label for="cbirthday" class="form-label">*生日</label>
+                    <input
+                        type="date"
+                        id="cbirthday"
+                        name="cbirthday"
+                        class="form-control"
+                        value="{{ obj_data.cbirthday|date:'Y-m-d' }}"
+                        required
+                    >
+                </div>
+
+                <!-- ==================== Email ==================== -->
+                <div class="col-md-6">
+                    <label for="cemail" class="form-label">*信箱</label>
+                    <input
+                        type="email"
+                        id="cemail"
+                        name="cemail"
+                        class="form-control"
+                        value="{{ obj_data.cemail }}"
+                        required
+                    >
+                </div>
+
+                <!-- ==================== 電話 ==================== -->
+                <div class="col-md-6">
+                    <label for="cphone" class="form-label">電話</label>
+                    <input
+                        type="text"
+                        id="cphone"
+                        name="cphone"
+                        class="form-control"
+                        value="{{ obj_data.cphone }}"
+                    >
+                </div>
+
+                <!-- ==================== 地址 ==================== -->
+                <div class="col-12">
+                    <label for="caddr" class="form-label">地址</label>
+                    <input
+                        type="text"
+                        id="caddr"
+                        name="caddr"
+                        class="form-control"
+                        value="{{ obj_data.caddr }}"
+                    >
+                </div>
+
+                <!-- ==================== 按鈕 ==================== -->
+                <div class="col-12 d-flex gap-2 pt-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> 修改
+                    </button>
+                    <button type="reset" class="btn btn-outline-secondary">重設</button>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

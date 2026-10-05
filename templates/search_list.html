@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load date_filters %}
+
+{% block title %}學生查詢結果{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">學生查詢結果</h1>
+    <a href="{% url 'search_name' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> 重新搜尋
+    </a>
+</div>
+
+{% if errormessage %}
+    <div class="alert alert-warning">{{ errormessage }}</div>
+{% endif %}
+
+{% if resultlist %}
+    <div class="row g-3">
+        {% for student in resultlist %}
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-person-circle text-secondary"></i>
+                                {{ student.cname }}
+                            </h5>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'edit' student.cid %}"
+                                   class="btn btn-sm btn-icon text-primary"
+                                   title="編輯">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="{% url 'delete' student.cid %}"
+                                   class="btn btn-sm btn-icon text-danger"
+                                   title="刪除">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <ul class="list-unstyled small text-muted mb-0">
+                            <li class="mb-1"><strong class="text-body">學號：</strong>{{ student.cid }}</li>
+                            <li class="mb-1"><strong class="text-body">性別：</strong>{% if student.csex == 'M' %}男{% elif student.csex == 'F' %}女{% else %}{{ student.csex }}{% endif %}</li>
+                            <li class="mb-1"><strong class="text-body">生日：</strong><span title="西元 {{ student.cbirthday|date:'Y-m-d' }}">{{ student.cbirthday|roc_date }}</span></li>
+                            <li class="mb-1"><strong class="text-body">電子郵件：</strong>{{ student.cemail }}</li>
+                            <li class="mb-1"><strong class="text-body">電話：</strong>{{ student.cphone }}</li>
+                            <li class="mb-0"><strong class="text-body">地址：</strong>{{ student.caddr }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-light border text-center">
+        目前沒有符合條件的資料。
+    </div>
+{% endif %}
+{% endblock %}
